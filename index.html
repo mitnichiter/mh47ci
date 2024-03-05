@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Interface</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #command-container {
+            text-align: center;
+        }
+
+        #command-input {
+            width: 200px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="command-container">
+        <h1>Command Interface</h1>
+        <input type="text" id="command-input" placeholder="Enter command">
+    </div>
+    <script>
+        const commandInput = document.getElementById('command-input');
+
+        commandInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                const commandText = commandInput.value.trim();
+                if (!commandText) {
+                    return; // Handle empty command case (optional)
+                }
+
+                const baseUrl = 'http://192.168.1.8:5000/';
+                const fullUrl = `${baseUrl}${commandText}`;
+
+                fetch(fullUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        // Handle successful response (display data, handle errors)
+                        console.log('Response data:', data);
+                    })
+                    .catch(error => {
+                        // Handle errors (network issues, server errors)
+                        console.error('Error:', error);
+                    });
+
+                commandInput.value = ''; // Clear the input after sending request
+            }
+        });
+    </script>
+</body>
+</html>
